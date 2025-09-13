@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt  # for visualization
 import seaborn as sns  # for advanced visualizations
 
 # Load the data from CSV with UTF-8 encoding
-data = pd.read_csv(r'C:\Users\pande\Downloads\dementia_model\dementia_model\data.csv', encoding='utf-8')
+data = pd.read_csv('data.csv', encoding='utf-8')
 
 # Display the first few rows of the dataset
 print("First 5 rows of the dataset:")
@@ -18,14 +18,12 @@ print(data.shape)
 print("\nMissing values before fill:")
 print(data.isnull().sum())
 
-# Fill missing values using the mean method for numerical columns only
-numeric_columns = data.select_dtypes(include=[np.number]).columns
-data[numeric_columns] = data[numeric_columns].fillna(data[numeric_columns].mean())
+# Fill missing values using forward fill (ffill) without the fillna method
+data.ffill(inplace=True)
 
 # Check if there are any remaining missing values
-print("\nMissing values after filling numerical columns with mean method:")
+print("\nMissing values after fill:")
 print(data.isnull().sum())
-
 
 # Gender distribution pie chart
 gender_counts = data['Gender'].value_counts()

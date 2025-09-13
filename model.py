@@ -11,12 +11,13 @@ from xgboost import XGBClassifier
 class DementiaPredictionModel:
     def __init__(self):
         self.label_encoders = {}
-        self.imputer = SimpleImputer(strategy='mean')
+        self.imputer = SimpleImputer(strategy='constant', fill_value=0)
         self.scaler = StandardScaler()
         self.lr_model = LogisticRegression(max_iter=1000)
         self.rf_model = RandomForestClassifier(n_estimators=100, random_state=42)
         self.xgb_model = XGBClassifier(use_label_encoder=False, eval_metric='mlogloss')
         self.category_mappings = {}
+        self.accuracies = {}  # Store model accuracies
         
     def preprocess_data(self, data, is_training=True):
         # Create a copy of the data to avoid modifying the original
@@ -89,7 +90,7 @@ class DementiaPredictionModel:
         
         # Split the data
         X_train, X_test, y_train, y_test = train_test_split(
-            X_processed, y, test_size=0.4, random_state=42
+            X_processed, y, test_size=0.2, random_state=42
         )
         
         # Train models
@@ -97,7 +98,7 @@ class DementiaPredictionModel:
         self.rf_model.fit(X_train, y_train)
         self.xgb_model.fit(X_train, y_train)
         
-        # Evaluate models
+        # Evaluate and store accuracies
         models = {
             'Logistic Regression': self.lr_model,
             'Random Forest': self.rf_model,
@@ -106,10 +107,16 @@ class DementiaPredictionModel:
         
         for name, model in models.items():
             predictions = model.predict(X_test)
+            accuracy = accuracy_score(y_test, predictions)
+            self.accuracies[name] = accuracy  # Store accuracy
             print(f"\n{name} Results:")
-            print(f"Accuracy: {accuracy_score(y_test, predictions):.4f}")
+            print(f"Accuracy: {accuracy:.4f}")
             print("Classification Report:")
             print(classification_report(y_test, predictions))
+    
+    def get_accuracies(self):
+        """Return stored model accuracies."""
+        return self.accuracies
 
     def predict(self, input_data_str):
         try:

@@ -1,7 +1,8 @@
-tk
-pandas
+torch
 numpy
+pandas
 matplotlib
 seaborn
 scikit-learn
 xgboost
+customtkinter
