@@ -18,7 +18,7 @@ A Python application for predicting dementia using Logistic Regression, Random F
 ## Installation
 1. Clone the repository:
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/Chilliflex/Dementia-Model
    cd dementia-prediction-system
 
 2. Create and activate a virtual environment:
